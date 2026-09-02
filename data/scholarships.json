@@ -1,0 +1,100 @@
+{
+  "scholarships": [
+    {
+      "id": 1,
+      "name": "Fulbright Foreign Student Program",
+      "type": "Government",
+      "sponsor": "U.S. Department of State",
+      "target_audience": "International graduate students and young professionals",
+      "coverage": "Full tuition, living stipend, airfare, health insurance",
+      "eligible_countries": "~155 countries",
+      "degree_level": "Master's, Ph.D.",
+      "application_portal": "https://apply.iie.org/ffsp2027",
+      "official_url": "https://foreign.fulbrightonline.org"
+    },
+    {
+      "id": 2,
+      "name": "Hubert H. Humphrey Fellowship",
+      "type": "Government",
+      "sponsor": "U.S. Department of State",
+      "target_audience": "Mid-career professionals",
+      "coverage": "Full funding, professional development",
+      "eligible_countries": "Varies by country",
+      "degree_level": "Non-degree professional program",
+      "application_portal": "https://apply.iie.org/huberthhumphrey",
+      "official_url": "https://www.humphreyfellowship.org"
+    },
+    {
+      "id": 3,
+      "name": "AAUW International Fellowships",
+      "type": "Foundation",
+      "sponsor": "American Association of University Women",
+      "target_audience": "Women, non-U.S. citizens or permanent residents",
+      "coverage": "$20,000 (Master's) / $25,000 (Doctoral)",
+      "eligible_countries": "All countries (except U.S.)",
+      "degree_level": "Graduate, Postgraduate",
+      "application_portal": "https://www.aauw.org/resources/programs/international-fellowships",
+      "official_url": "https://www.aauw.org"
+    },
+    {
+      "id": 4,
+      "name": "Knight-Hennessy Scholars",
+      "type": "University",
+      "sponsor": "Stanford University",
+      "target_audience": "Exceptional leaders worldwide",
+      "coverage": "Full funding, up to 3 years",
+      "eligible_countries": "All countries",
+      "degree_level": "All graduate degrees at Stanford",
+      "application_portal": "https://knight-hennessy.stanford.edu",
+      "official_url": "https://knight-hennessy.stanford.edu"
+    },
+    {
+      "id": 5,
+      "name": "Rotary Peace Fellowship",
+      "type": "Foundation",
+      "sponsor": "The Rotary Foundation",
+      "target_audience": "Professionals in peace and conflict resolution",
+      "coverage": "Full funding",
+      "eligible_countries": "All countries",
+      "degree_level": "Master's",
+      "application_portal": "https://www.rotary.org",
+      "official_url": "https://www.rotary.org"
+    },
+    {
+      "id": 6,
+      "name": "AAUW Dissertation Fellowship",
+      "type": "ABD Fellowship",
+      "sponsor": "American Association of University Women",
+      "target_audience": "Women doctoral candidates in final year",
+      "coverage": "Varies",
+      "eligible_countries": "Varies",
+      "degree_level": "Ph.D. (All But Dissertation)",
+      "application_portal": "https://www.aauw.org/resources/programs/dissertation-fellowships",
+      "official_url": "https://www.aauw.org"
+    },
+    {
+      "id": 7,
+      "name": "Ford Foundation Dissertation Fellowship",
+      "type": "ABD Fellowship",
+      "sponsor": "National Academies of Sciences, Engineering, and Medicine",
+      "target_audience": "Ph.D. candidates in final year",
+      "coverage": "One-year stipend",
+      "eligible_countries": "Varies",
+      "degree_level": "Ph.D. (All But Dissertation)",
+      "application_portal": "https://www.nationalacademies.org/our-work/ford-foundation-fellowships",
+      "official_url": "https://www.nationalacademies.org"
+    },
+    {
+      "id": 8,
+      "name": "Mellon/ACLS Dissertation Completion Fellowship",
+      "type": "ABD Fellowship",
+      "sponsor": "American Council of Learned Societies",
+      "target_audience": "Humanities and social sciences Ph.D. candidates",
+      "coverage": "$30,000 + $3,000 research + $5,000 tuition",
+      "eligible_countries": "Varies",
+      "degree_level": "Ph.D. (All But Dissertation)",
+      "application_portal": "https://www.acls.org/fellowships",
+      "official_url": "https://www.acls.org"
+    }
+  ]
+}
