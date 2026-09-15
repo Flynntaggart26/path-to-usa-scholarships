@@ -191,6 +191,12 @@ Alternatively, you can open an **Issue** to report errors or suggest improvement
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details. You are free to use, modify, and distribute this content with proper attribution.
 
+### Data License & Attribution
+
+- **Dashboard data (`data/colleges.json`):** Derived from **College Scorecard** (U.S. Department of Education) and **IPEDS** — both **public domain (U.S. Government work)**. No permission required for reuse. Facts (tuition, earnings, enrollment) are not copyrightable.
+- **Code (`index.html` and visualizer):** MIT — original implementation, no third-party copyrighted assets. Fonts: Inter/Fraunces/JetBrains Mono (OFL).
+- **Not affiliated with** the U.S. Department of Education or any listed university. College names are used under nominative fair use for factual comparison only — no logos or copyrighted text is included. Always verify current figures on the official university and Scorecard sites before applying.
+
 ---
 
 ## 📬 Stay Updated
