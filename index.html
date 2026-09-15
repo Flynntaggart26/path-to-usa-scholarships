@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US College Value Dashboard — Cost vs Outcome for International Students</title>
+<meta name="description" content="Interactive dashboard of 35 US colleges vs true cost, median earnings, aid and need-blind policies. Built from College Scorecard + IPEDS.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0c0e14;--card:#151821;--card2:#1c2030;--border:#252a3d;--text:#eef0ff;--muted:#9aa0b8;--accent:#6C5CFF;--accent2:#00D9A5;--warn:#ffb84d;--red:#ff6b6b}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:var(--accent)}
+.header{position:sticky;top:0;z-index:40;background:rgba(12,14,20,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.head-inner{max-width:1320px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#8a7dff);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:800}
+.logo h1{font-family:Fraunces,serif;font-size:18px;line-height:1}
+.logo p{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.navlinks{display:flex;gap:8px;flex-wrap:wrap}
+.navlinks a{padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-weight:700;font-size:12px;text-decoration:none}
+.navlinks a.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
+.hero{max-width:1320px;margin:18px auto 0;padding:0 20px}
+.hero-card{background:linear-gradient(135deg,#6C5CFF 0%,#3a2fbf 50%,#0f1140 100%);border-radius:20px;padding:22px;display:grid;grid-template-columns:1.15fr .85fr;gap:18px;position:relative;overflow:hidden}
+.hero-card:after{content:'';position:absolute;inset:0;background:radial-gradient(600px 300px at 70% 0%,rgba(255,255,255,.14),transparent)}
+.hero-card>*{position:relative}
+.hero h2{font-family:Fraunces,serif;font-size:28px;line-height:1.08}
+.hero p{margin-top:8px;color:rgba(255,255,255,.86);font-size:13px;max-width:58ch}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.18);padding:6px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.kpi{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px}
+.kpi-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);font-weight:800}
+.kpi-val{font-family:Fraunces,serif;font-size:20px;margin-top:2px}
+.kpi-sub{font-size:11px;color:rgba(255,255,255,.7)}
+.hero-side{background:white;color:#0f0f14;border-radius:16px;padding:14px;box-shadow:0 16px 30px rgba(0,0,0,.25)}
+.hero-side h3{font-family:Fraunces,serif;font-size:14px}
+.mini{font-size:12px;color:#5a5a6e;margin-top:6px}
+.mini b{color:#0f0f14}
+.wrap{max-width:1320px;margin:16px auto;padding:0 20px 32px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.field input,.field select{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:10px 11px;color:var(--text);font-size:13px;min-width:150px;outline:none}
+.field input:focus,.field select:focus{border-color:var(--accent)}
+.btn{padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-weight:800;font-size:12px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:white}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.stat{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px}
+.stat small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.stat b{font-family:Fraunces,serif;font-size:18px}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}
+.chart{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px}
+.chart h3{font-family:Fraunces,serif;font-size:16px}
+.chart p{font-size:12px;color:var(--muted);margin-top:2px}
+.svg-wrap{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:8px;margin-top:10px;overflow:auto}
+.tooltip{position:absolute;background:#0f0f14;color:white;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:11px;pointer-events:none;transform:translate(-50%,-110%);display:none;white-space:nowrap;z-index:10;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.table-wrap{margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{position:sticky;top:0;background:var(--card2);text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
+tbody td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+tbody tr:hover{background:rgba(108,92,255,.06);cursor:pointer}
+.badge{padding:3px 7px;border-radius:999px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--border)}
+.b-needblind{background:rgba(0,217,165,.14);color:var(--accent2);border-color:rgba(0,217,165,.3)}
+.b-needaware{background:rgba(255,184,77,.14);color:var(--warn);border-color:rgba(255,184,77,.3)}
+.b-free{background:rgba(108,92,255,.16);color:#a99dff;border-color:rgba(108,92,255,.3)}
+.b-public{background:rgba(255,255,255,.06);color:var(--muted)}
+.b-private{background:rgba(255,255,255,.06);color:var(--muted)}
+.roi-pos{color:var(--accent2);font-weight:800}
+.roi-neg{color:var(--red);font-weight:800}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:999px;display:inline-block}
+.method{margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px}
+.method h3{font-family:Fraunces,serif}
+.method p,.method li{font-size:12.5px;color:#c8c8da}
+.method ul{margin:8px 0 0 18px}
+.footer{max-width:1320px;margin:0 auto;padding:0 20px 24px;color:var(--muted);font-size:11px;text-align:center}
+@media(max-width:980px){.hero-card{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.stats-row{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="head-inner">
+    <div class="logo"><div class="mark">US</div><div><h1>US College Value Dashboard</h1><p>Cost vs Outcome • For International Applicants • Scorecard + IPEDS</p></div></div>
+    <div class="navlinks">
+      <a href="#dashboard">Dashboard</a>
+      <a href="README.md">Guide</a>
+      <a href="SOURCES.md">Sources</a>
+      <a class="primary" href="https://github.com/Flynntaggart26/path-to-usa-scholarships">★ Star on GitHub</a>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-card">
+    <div>
+      <h2>Don't just chase ranking — chase value.</h2>
+      <p>35 curated US colleges plotted by <b>true net price for aided students</b> vs <b>median earnings 10 years after entry</b>. Filter by need-blind policy, control, and state — built from U.S. Department of Education College Scorecard.</p>
+      <div class="chips"><span class="chip">✓ Need-Blind vs Need-Aware</span><span class="chip">✓ Sticker ≠ Net Price</span><span class="chip">✓ ROI = Earnings − Net Price</span></div>
+      <div class="kpis" id="heroKpis"></div>
+    </div>
+    <div class="hero-side">
+      <h3>How to use — 30 seconds</h3>
+      <div class="mini"><b>1.</b> Filter by need policy (Need-Blind = 100% need met, best for low-income intl).</div>
+      <div class="mini"><b>2.</b> Scatter: bottom-right = high earnings, low net price = high ROI.</div>
+      <div class="mini"><b>3.</b> Click any dot or table row for detail + official link.</div>
+      <div class="mini" style="margin-top:8px;padding:8px;background:#f6f7ff;border:1px solid #e2e1ff;border-radius:10px">💡 <b>Berea College:</b> tuition $0, work-college — extreme outlier. <b>MIT/Stanford:</b> high earnings despite sticker.</div>
+      <div class="mini" style="color:#8a8aa0;font-size:11px;margin-top:8px">Data: College Scorecard 2023-24. Net price = aided low-income. See Methodology.</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="dashboard">
+  <div class="panel">
+    <div class="filters">
+      <div class="field"><label>Search</label><input id="q" placeholder="Harvard, MIT, California..." oninput="render()"></div>
+      <div class="field"><label>Control</label><select id="control" onchange="render()"><option value="all">All</option><option value="Private">Private</option><option value="Public">Public</option></select></div>
+      <div class="field"><label>Need policy</label><select id="need" onchange="render()"><option value="all">All</option><option value="Need-Blind">Need-Blind</option><option value="Need-Aware">Need-Aware</option><option value="Tuition-Free">Tuition-Free (Berea)</option></select></div>
+      <div class="field"><label>State</label><select id="state" onchange="render()"><option value="all">All states</option></select></div>
+      <div class="field"><label>Sort table by</label><select id="sort" onchange="render()"><option value="roi_desc">ROI ↓ (earnings − net)</option><option value="earnings_desc">Earnings ↓</option><option value="net_asc">Net price ↑ (cheapest)</option><option value="accept_asc">Acceptance ↑ (most selective)</option><option value="sticker_asc">Sticker ↑</option></select></div>
+      <button class="btn" onclick="resetFilters()">Reset</button>
+      <button class="btn primary" onclick="exportCSV()">⬇ Export filtered CSV</button>
+    </div>
+    <div class="stats-row" id="stats"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="chart">
+      <h3>Cost vs Outcome — Scatter</h3>
+      <p>X = net price for aided students (lower = cheaper) • Y = median earnings 10yr • Size = enrollment • Hover for detail, click to pin</p>
+      <div class="svg-wrap" style="position:relative">
+        <svg id="scatter" width="640" height="360" viewBox="0 0 640 360" role="img" aria-label="Scatter"></svg>
+        <div id="tip" class="tooltip"></div>
+      </div>
+      <div class="legend"><span><span class="dot" style="background:#6C5CFF"></span> Private</span><span><span class="dot" style="background:#00D9A5"></span> Public</span><span><span class="dot" style="background:#ffb84d"></span> Need-Blind (100% need)</span><span>Size = enrollment</span></div>
+    </div>
+    <div class="chart">
+      <h3>Top ROI — Earnings Minus Net Price</h3>
+      <p>Higher = better value. Green = strong ROI. Based on current filters.</p>
+      <div class="svg-wrap"><svg id="bars" width="420" height="360" viewBox="0 0 420 360"></svg></div>
+    </div>
+  </div>
+
+  <div class="chart table-wrap">
+    <h3>Filtered Colleges — Click for detail</h3>
+    <p id="tableMeta" style="font-size:12px;color:var(--muted)"></p>
+    <div style="overflow:auto;max-height:520px;margin-top:8px;border:1px solid var(--border);border-radius:12px">
+      <table>
+        <thead><tr>
+          <th data-k="name">College ▾</th>
+          <th data-k="state">State</th>
+          <th data-k="control">Control</th>
+          <th data-k="need">Need Policy</th>
+          <th data-k="sticker">Sticker</th>
+          <th data-k="net">Net aided</th>
+          <th data-k="earn">Earnings 10yr</th>
+          <th data-k="roi">ROI</th>
+          <th data-k="accept">Accept %</th>
+          <th data-k="sat">SAT mid</th>
+        </tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="method">
+    <h3>Methodology & Sources</h3>
+    <p><b>Dataset:</b> 35 representative schools curated from <b>College Scorecard (U.S. Dept of Education)</b> + IPEDS. Earnings = <code>MD_EARN_WNE_P10</code> (median 10yr after entry). Tuition = sticker for full-time undergrad. Net price aided = avg for aided low-income students (approx for intl with need-based aid). Berea College is work-college tuition-free.</p>
+    <ul>
+      <li>Need-Blind = admissions does not consider ability to pay; meets 100% demonstrated need — critical for high-need international applicants. Public universities are need-aware for intl and rarely meet full need.</li>
+      <li>ROI here is simplistic (earnings − net price) for comparison only; not NPV. Use as starting point, not financial advice.</li>
+      <li>All numbers 2023-24, see <a href="SOURCES.md">SOURCES.md</a> and <a href="data/colleges.json">data/colleges.json</a>. Verify on official college sites before applying.</li>
+    </ul>
+    <p style="margin-top:8px">Built by <b>Flynntaggart26</b> • <a href="https://github.com/Flynntaggart26/path-to-usa-scholarships">Repo</a> • MIT</p>
+  </div>
+</div>
+
+<footer class="footer">Data: College Scorecard + IPEDS (public domain) • Visualizer: vanilla JS, no build • Star the repo to support.</footer>
+
+<!-- Detail modal -->
+<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(6,8,14,.6);backdrop-filter:blur(6px);z-index:60;align-items:center;justify-content:center;padding:16px">
+  <div style="max-width:560px;width:100%;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;position:relative">
+    <button onclick="closeModal()" style="position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:999px;border:1px solid var(--border);background:var(--card2);color:var(--text);cursor:pointer">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+let colleges=[], filtered=[];
+let sortKey='roi_desc';
+const $=s=>document.getElementById(s);
+const fmt=n=> n===0? '$0' : '$'+n.toLocaleString();
+const roiOf=c=> c.earnings_10yr - c.net_price_aided;
+
+async function load(){
+  const res=await fetch('data/colleges.json');
+  const j=await res.json();
+  colleges=j.colleges.map(c=>({...c, roi: roiOf(c)}));
+  // also try to fetch scholarships count for KPIs
+  populateStates();
+  render();
+}
+function populateStates(){
+  const states=[...new Set(colleges.map(c=>c.state))].sort();
+  const sel=$('state');
+  states.forEach(s=>{ const o=document.createElement('option'); o.value=s;o.textContent=s; sel.appendChild(o); });
+}
+
+function getFilters(){
+  return { q: $('q').value.trim().toLowerCase(), control:$('control').value, need:$('need').value, state:$('state').value, sort:$('sort').value };
+}
+
+function applyFilters(){
+  const f=getFilters();
+  filtered = colleges.filter(c=>{
+    if(f.control!=='all' && c.control!==f.control) return false;
+    if(f.state!=='all' && c.state!==f.state) return false;
+    if(f.need!=='all'){
+      if(f.need==='Tuition-Free' && c.need_policy!=='Tuition-Free') return false;
+      else if(f.need!=='Tuition-Free' && c.need_policy!==f.need){
+        // need-aware includes variants
+        if(f.need==='Need-Aware' && !c.need_policy.includes('Need-Aware')) return false;
+        if(f.need==='Need-Blind' && c.need_policy!=='Need-Blind') return false;
+      }
+    }
+    if(f.q){
+      const hay=[c.name,c.city,c.state,c.need_policy,c.control].join(' ').toLowerCase();
+      if(!hay.includes(f.q)) return false;
+    }
+    return true;
+  });
+  // sort table
+  const s=f.sort;
+  filtered.sort((a,b)=>{
+    if(s==='roi_desc') return b.roi - a.roi;
+    if(s==='earnings_desc') return b.earnings_10yr - a.earnings_10yr;
+    if(s==='net_asc') return a.net_price_aided - b.net_price_aided;
+    if(s==='accept_asc') return a.acceptance - b.acceptance;
+    if(s==='sticker_asc') return a.tuition_sticker - b.tuition_sticker;
+    return 0;
+  });
+}
+
+function render(){
+  applyFilters();
+  renderKPIs();
+  renderStats();
+  renderScatter();
+  renderBars();
+  renderTable();
+}
+
+function renderKPIs(){
+  const el=$('heroKpis');
+  const avg = (arr,k)=> Math.round(arr.reduce((a,c)=>a+c[k],0)/arr.length);
+  const all=colleges;
+  el.innerHTML=`
+    <div class="kpi"><div class="kpi-label">Schools</div><div class="kpi-val">${colleges.length}</div><div class="kpi-sub">curated</div></div>
+    <div class="kpi"><div class="kpi-label">Avg sticker</div><div class="kpi-val">${fmt(avg(all,'tuition_sticker'))}</div><div class="kpi-sub">full price</div></div>
+    <div class="kpi"><div class="kpi-label">Avg net aided</div><div class="kpi-val">${fmt(avg(all,'net_price_aided'))}</div><div class="kpi-sub">with need aid</div></div>
+    <div class="kpi"><div class="kpi-label">Avg earnings 10yr</div><div class="kpi-val">${fmt(avg(all,'earnings_10yr'))}</div><div class="kpi-sub">median</div></div>
+  `;
+}
+
+function renderStats(){
+  const el=$('stats');
+  if(!filtered.length){ el.innerHTML='<div class="stat"><small>Filtered</small><b>0 schools</b></div>'; return; }
+  const avg = (k)=> Math.round(filtered.reduce((a,c)=>a+c[k],0)/filtered.length);
+  const best = filtered[0];
+  el.innerHTML=`
+    <div class="stat"><small>Filtered</small><b>${filtered.length} schools</b><div style="font-size:11px;color:var(--muted)">${filtered.filter(c=>c.need_policy==='Need-Blind').length} need-blind</div></div>
+    <div class="stat"><small>Avg net aided</small><b>${fmt(avg('net_price_aided'))}</b><div style="font-size:11px;color:var(--muted)">vs sticker ${fmt(avg('tuition_sticker'))}</div></div>
+    <div class="stat"><small>Avg earnings 10yr</small><b>${fmt(avg('earnings_10yr'))}</b><div style="font-size:11px;color:var(--muted)">ROI avg ${fmt(avg('roi'))}</div></div>
+    <div class="stat"><small>Top ROI (filtered)</small><b>${best.name}</b><div style="font-size:11px;color:var(--accent2);font-weight:800">${fmt(best.roi)} • ${fmt(best.net_price_aided)} → ${fmt(best.earnings_10yr)}</div></div>
+  `;
+}
+
+function renderScatter(){
+  const svg=$('scatter');
+  svg.innerHTML='';
+  const W=640,H=360, pad={l:48,r:14,t:14,b:36};
+  const data=filtered;
+  if(!data.length){
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',W/2);t.setAttribute('y',H/2);t.setAttribute('text-anchor','middle');t.setAttribute('fill','#9aa0b8');t.setAttribute('font-size','12');t.textContent='No data for filters';
+    svg.appendChild(t); return;
+  }
+  const xs=data.map(d=>d.net_price_aided), ys=data.map(d=>d.earnings_10yr);
+  let xmin=Math.min(...xs), xmax=Math.max(...xs), ymin=Math.min(...ys), ymax=Math.max(...ys);
+  // add padding
+  const xr=xmax-xmin||1, yr=ymax-ymin||1;
+  xmin-=xr*0.08; xmax+=xr*0.08; ymin-=yr*0.08; ymax+=yr*0.08;
+  if(xmin<0) xmin=0;
+  const xScale=v=> pad.l + (v-xmin)/(xmax-xmin)*(W-pad.l-pad.r);
+  const yScale=v=> H-pad.b - (v-ymin)/(ymax-ymin)*(H-pad.t-pad.b);
+  const rScale=en=> 4 + Math.sqrt(en)/28; // enrollment bubble
+
+  // grid
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  // axes
+  for(let i=0;i<=4;i++){
+    const xv=xmin + (xmax-xmin)*i/4, yv=ymin + (ymax-ymin)*i/4;
+    // vertical grid
+    const lx=document.createElementNS('http://www.w3.org/2000/svg','line');
+    lx.setAttribute('x1',xScale(xv)); lx.setAttribute('x2',xScale(xv)); lx.setAttribute('y1',pad.t); lx.setAttribute('y2',H-pad.b); lx.setAttribute('stroke','#252a3d'); lx.setAttribute('stroke-width','1'); lx.setAttribute('opacity','.6'); g.appendChild(lx);
+    const ly=document.createElementNS('http://www.w3.org/2000/svg','line');
+    ly.setAttribute('x1',pad.l); ly.setAttribute('x2',W-pad.r); ly.setAttribute('y1',yScale(yv)); ly.setAttribute('y2',yScale(yv)); ly.setAttribute('stroke','#252a3d'); ly.setAttribute('stroke-width','1'); ly.setAttribute('opacity','.6'); g.appendChild(ly);
+  }
+  svg.appendChild(g);
+
+  // axis labels
+  const addLabel=(x,y,txt,anchor='middle',size=10,color='#9aa0b8')=>{
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',x);t.setAttribute('y',y);t.setAttribute('text-anchor',anchor);t.setAttribute('fill',color);t.setAttribute('font-size',size);t.setAttribute('font-weight','700');t.textContent=txt; svg.appendChild(t);
+  };
+  for(let i=0;i<=4;i++){
+    const xv=Math.round(xmin + (xmax-xmin)*i/4);
+    addLabel(xScale(xv), H-12, fmt(xv), 'middle');
+    const yv=Math.round(ymin + (ymax-ymin)*i/4);
+    addLabel(10, yScale(yv)+4, fmt(yv), 'start');
+  }
+  addLabel(W/2, H-2, 'Net price for aided students →', 'middle', 10, '#6C5CFF');
+  // rotated Y label
+  const yl=document.createElementNS('http://www.w3.org/2000/svg','text');
+  yl.setAttribute('x',0);yl.setAttribute('y',0);yl.setAttribute('transform',`translate(12,${H/2}) rotate(-90)`);yl.setAttribute('text-anchor','middle');yl.setAttribute('fill','#00D9A5');yl.setAttribute('font-size','10');yl.setAttribute('font-weight','800');yl.textContent='Median earnings 10yr →'; svg.appendChild(yl);
+
+  // points
+  data.forEach(d=>{
+    const cx=xScale(d.net_price_aided), cy=yScale(d.earnings_10yr), r=rScale(d.enrollment);
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',cx); c.setAttribute('cy',cy); c.setAttribute('r',r);
+    let fill=d.control==='Public' ? '#00D9A5' : '#6C5CFF';
+    // highlight need-blind with stroke
+    c.setAttribute('fill',fill); c.setAttribute('opacity','.9');
+    c.setAttribute('stroke', d.need_policy==='Need-Blind' ? '#ffb84d' : (d.need_policy==='Tuition-Free' ? '#a99dff' : 'rgba(255,255,255,.12)'));
+    c.setAttribute('stroke-width', d.need_policy==='Need-Blind' ? '2.5' : '1.2');
+    c.style.cursor='pointer';
+    c.addEventListener('mouseenter', e=> showTip(e,d));
+    c.addEventListener('mouseleave', hideTip);
+    c.addEventListener('click', ()=> openModal(d));
+    c.addEventListener('mousemove', e=> moveTip(e));
+    svg.appendChild(c);
+    // label for top ROI small
+    if(data.indexOf(d)<2){
+      const lab=document.createElementNS('http://www.w3.org/2000/svg','text');
+      lab.setAttribute('x',cx+ r+4); lab.setAttribute('y',cy-6); lab.setAttribute('fill','#eef0ff'); lab.setAttribute('font-size','9'); lab.setAttribute('font-weight','700'); lab.textContent=d.name.split(' ')[0];
+      svg.appendChild(lab);
+    }
+  });
+  // axes lines
+  const ax=document.createElementNS('http://www.w3.org/2000/svg','line');
+  ax.setAttribute('x1',pad.l);ax.setAttribute('y1',H-pad.b);ax.setAttribute('x2',W-pad.r);ax.setAttribute('y2',H-pad.b);ax.setAttribute('stroke','#3a415f');ax.setAttribute('stroke-width','1.2'); svg.appendChild(ax);
+  const ay=document.createElementNS('http://www.w3.org/2000/svg','line');
+  ay.setAttribute('x1',pad.l);ay.setAttribute('y1',pad.t);ay.setAttribute('x2',pad.l);ay.setAttribute('y2',H-pad.b);ay.setAttribute('stroke','#3a415f');ay.setAttribute('stroke-width','1.2'); svg.appendChild(ay);
+}
+
+function showTip(evt,d){
+  const tip=$('tip');
+  tip.style.display='block';
+  tip.innerHTML=`<b>${d.name}</b><br>${d.city}, ${d.state} • ${d.control} • ${d.need_policy}<br>Net ${fmt(d.net_price_aided)} • Earnings ${fmt(d.earnings_10yr)} • <b style="color:#00D9A5">ROI ${fmt(d.roi)}</b><br>Accept ${d.acceptance}% • SAT ${d.sat_mid}`;
+  moveTip(evt);
+}
+function moveTip(evt){
+  const tip=$('tip'), svg=$('scatter'), rect=svg.getBoundingClientRect();
+  const x=evt.clientX - rect.left, y=evt.clientY - rect.top;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+}
+function hideTip(){ $('tip').style.display='none'; }
+
+function renderBars(){
+  const svg=$('bars'); svg.innerHTML='';
+  const W=420,H=360, pad={l:120,r:16,t:10,b:24};
+  const top=[...filtered].sort((a,b)=>b.roi-a.roi).slice(0,12);
+  if(!top.length){ return; }
+  const maxRoi=Math.max(...top.map(d=>d.roi));
+  const barH=(H-pad.t-pad.b)/top.length;
+  top.forEach((d,i)=>{
+    const y=pad.t + i*barH + 4;
+    const w=(d.roi/maxRoi)*(W-pad.l-pad.r);
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',pad.l); rect.setAttribute('y',y); rect.setAttribute('width',Math.max(2,w)); rect.setAttribute('height',barH-8); rect.setAttribute('rx',6);
+    rect.setAttribute('fill', d.roi>60000 ? '#00D9A5' : d.roi>40000 ? '#6C5CFF' : '#ffb84d');
+    rect.style.cursor='pointer';
+    rect.addEventListener('click',()=>openModal(d));
+    svg.appendChild(rect);
+    const label=document.createElementNS('http://www.w3.org/2000/svg','text');
+    label.setAttribute('x',pad.l-8); label.setAttribute('y',y+barH/2); label.setAttribute('text-anchor','end'); label.setAttribute('dominant-baseline','middle'); label.setAttribute('fill','#eef0ff'); label.setAttribute('font-size','9'); label.setAttribute('font-weight','700');
+    label.textContent=d.name.length>22? d.name.slice(0,22)+'…': d.name;
+    svg.appendChild(label);
+    const val=document.createElementNS('http://www.w3.org/2000/svg','text');
+    val.setAttribute('x',pad.l + w + 6); val.setAttribute('y',y+barH/2); val.setAttribute('dominant-baseline','middle'); val.setAttribute('fill','#9aa0b8'); val.setAttribute('font-size','9'); val.setAttribute('font-weight','700');
+    val.textContent=fmt(d.roi);
+    svg.appendChild(val);
+  });
+}
+
+function renderTable(){
+  const tb=$('tbody'), meta=$('tableMeta');
+  meta.textContent=`${filtered.length} of ${colleges.length} schools • Sorted by ${$('sort').selectedOptions[0].textContent}`;
+  tb.innerHTML='';
+  filtered.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.onclick=()=>openModal(c);
+    const needBadge = c.need_policy==='Need-Blind'?'<span class="badge b-needblind">Need-Blind</span>': c.need_policy==='Tuition-Free'?'<span class="badge b-free">Tuition-Free</span>': c.need_policy.includes('Need-Aware')?'<span class="badge b-needaware">Need-Aware</span>':'<span class="badge">'+c.need_policy+'</span>';
+    const ctrlBadge = c.control==='Public'?'<span class="badge b-public">Public</span>':'<span class="badge b-private">Private</span>';
+    const roiCls = c.roi>60000? 'roi-pos' : c.roi<20000? 'roi-neg':'';
+    tr.innerHTML=`
+      <td><b>${c.name}</b><div style="font-size:11px;color:var(--muted)">${c.city}, ${c.state}</div></td>
+      <td>${c.state}</td>
+      <td>${ctrlBadge}</td>
+      <td>${needBadge}<div style="font-size:10px;color:var(--muted)">${c.meets_need}</div></td>
+      <td>${fmt(c.tuition_sticker)}</td>
+      <td><b>${fmt(c.net_price_aided)}</b></td>
+      <td>${fmt(c.earnings_10yr)}</td>
+      <td class="${roiCls}">${fmt(c.roi)}</td>
+      <td>${c.acceptance}%</td>
+      <td>${c.sat_mid}</td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+function openModal(c){
+  const m=$('modal'), body=$('modalBody');
+  m.style.display='flex';
+  body.innerHTML=`
+    <div style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800">${c.control} • ${c.city}, ${c.state}</div>
+    <h3 style="font-family:Fraunces,serif;font-size:20px;margin-top:4px">${c.name}</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <span class="badge ${c.need_policy==='Need-Blind'?'b-needblind':c.need_policy==='Tuition-Free'?'b-free':'b-needaware'}">${c.need_policy} • ${c.meets_need}</span>
+      <span class="badge ${c.control==='Public'?'b-public':'b-private'}">${c.control}</span>
+      <span class="badge">Intl aid ${c.intl_aid_pct}%</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px"><div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800">Sticker tuition</div><div style="font-family:Fraunces,serif;font-size:18px">${fmt(c.tuition_sticker)}</div></div>
+      <div style="background:rgba(0,217,165,.08);border:1px solid rgba(0,217,165,.2);border-radius:12px;padding:10px"><div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent2);font-weight:800">Net aided</div><div style="font-family:Fraunces,serif;font-size:18px;color:var(--accent2)">${fmt(c.net_price_aided)}</div></div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:10px"><div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800">Earnings 10yr</div><div style="font-family:Fraunces,serif;font-size:18px">${fmt(c.earnings_10yr)}</div></div>
+      <div style="background:rgba(108,92,255,.08);border:1px solid rgba(108,92,255,.2);border-radius:12px;padding:10px"><div style="font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#a99dff;font-weight:800">ROI (earn − net)</div><div style="font-family:Fraunces,serif;font-size:18px;color:#a99dff">${fmt(c.roi)}</div></div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)"><span>Acceptance <b style="color:var(--text)">${c.acceptance}%</b></span><span>SAT mid <b style="color:var(--text)">${c.sat_mid}</b></span><span>Enrollment <b style="color:var(--text)">${c.enrollment.toLocaleString()}</b></span></div>
+    <div style="margin-top:12px;padding:10px;background:var(--card2);border:1px solid var(--border);border-radius:12px;font-size:11px;color:var(--muted)">💡 <b style="color:var(--text)">Intl tip:</b> ${c.need_policy==='Need-Blind' ? 'Need-blind + meets 100% need = aid is generous if admitted — highly competitive but true cost can be <$15k.' : c.need_policy==='Tuition-Free' ? 'Berea charges no tuition; work program covers cost — but limited spots.' : 'Need-aware for intl: aid exists but admission is need-sensitive. Show strong merit and apply for merit scholarships too.'}</div>
+    <a href="${c.website}" target="_blank" rel="noopener" style="display:block;margin-top:12px;text-align:center;padding:11px;border-radius:11px;background:var(--accent);color:white;font-weight:800;text-decoration:none">Official site → ${c.website.replace('https://','')}</a>
+    <div style="margin-top:8px;display:flex;gap:8px"><a href="SOURCES.md" style="flex:1;text-align:center;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-weight:700;font-size:12px;text-decoration:none">Sources</a><a href="data/colleges.json" target="_blank" style="flex:1;text-align:center;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-weight:700;font-size:12px;text-decoration:none">View JSON</a></div>
+  `;
+}
+function closeModal(){ $('modal').style.display='none'; }
+$('modal').addEventListener('click', e=>{ if(e.target===$('modal')) closeModal(); });
+
+function resetFilters(){ $('q').value=''; $('control').value='all'; $('need').value='all'; $('state').value='all'; $('sort').value='roi_desc'; render(); }
+function exportCSV(){
+  const h=['name','city','state','control','need_policy','meets_need','tuition_sticker','net_price_aided','earnings_10yr','roi','acceptance','sat_mid','intl_aid_pct','enrollment','website'];
+  let csv=h.join(',')+'\n';
+  filtered.forEach(c=>{ csv+= h.map(k=>`"${String(c[k]??c.roi).replace(/"/g,'""')}"`).join(',')+'\n'; });
+  const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='colleges_filtered.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+// table header sort
+document.querySelectorAll('thead th').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const map={name:'roi_desc',state:'roi_desc',control:'roi_desc',need:'roi_desc',sticker:'sticker_asc',net:'net_asc',earn:'earnings_desc',roi:'roi_desc',accept:'accept_asc',sat:'accept_asc'};
+    const k=th.dataset.k; if(map[k]){ $('sort').value=map[k]; render(); }
+  });
+});
+
+load().catch(e=>{ console.error(e); alert('Failed to load data/colleges.json — run via local server (python -m http.server) or Pages.'); });
+</script>
+</body>
+</html>

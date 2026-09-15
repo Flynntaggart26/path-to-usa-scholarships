@@ -1,10 +1,13 @@
 # 🇺🇸 U.S. Scholarships & Financial Aid Guide
 
-> A verified, curated resource for international students seeking funding to study in the United States.
+> A verified, curated resource for international students seeking funding to study in the United States — now with an **interactive College Value Dashboard** (cost vs outcome).
 
+[![Live Dashboard](https://img.shields.io/badge/Live-Dashboard-6C5CFF?style=for-the-badge)](https://flynntaggart26.github.io/path-to-usa-scholarships/)
 [![Last Updated](https://img.shields.io/badge/Last%20Updated-September%202026-blue)](https://github.com/your-username/us-scholarship-guide)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Active-brightgreen)]()
+
+> **🎯 NEW: Interactive Dashboard** → **[Open Dashboard](https://flynntaggart26.github.io/path-to-usa-scholarships/)** • `index.html` • 35 colleges plotted by **net price for aided students vs median earnings 10yr** from College Scorecard + IPEDS. Filter by Need-Blind, control, state. Perfect for picking where to apply.
 
 ---
 
@@ -29,8 +32,23 @@ All information is sourced from official government portals, recognized foundati
 
 ---
 
+## 📊 Interactive Dashboard — Cost vs Outcome Visualizer
+
+**Live:** `https://flynntaggart26.github.io/path-to-usa-scholarships/` • Local: `open index.html`
+
+What it does:
+- **Scatter:** X = net price for aided students, Y = median earnings 10yr after entry, bubble = enrollment, gold ring = Need-Blind (100% need met).
+- **ROI bar:** Earnings − Net price → *Don't trust sticker price. A $62k school can cost $11k after aid and earn $98k.*
+- **Filters:** Search, Public/Private, Need-Blind / Need-Aware / Tuition-Free (Berea), State, sort.
+- **Table + detail modal:** 35 schools from College Scorecard + IPEDS. Click any dot/row for aid tip + official link. Export filtered CSV.
+
+Build: vanilla HTML/CSS/JS, no dependencies, `data/colleges.json` (curated Scorecard 2023-24). See Methodology in the dashboard footer.
+
+---
+
 ## 🗂️ Repository Structure
 us-scholarship-guide/
+├── index.html # Interactive Dashboard (NEW) — cost vs outcome visualizer
 ├── README.md # You are here — project overview and navigation
 ├── SOURCES.md # Complete, verified list of all references and official URLs
 ├── GUIDE.md # Full detailed guide with program descriptions and application strategies
@@ -41,7 +59,8 @@ us-scholarship-guide/
 ├── /checklists/ # Application checklists and timelines
 │ └── application-checklist.md
 └── /data/ # Structured data (JSON/CSV) for programmatic use
-└── scholarships.json
+    ├── colleges.json # 35 colleges: sticker, net price, earnings, need policy, aid (NEW)
+    └── scholarships.json
 
 
 ---
